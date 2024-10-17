@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم - ياسر الدوسري | Coran - Yasser Al-Dossari</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Traditional Arabic', Arial, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a4a1c;
+            --secondary-color: #226357;
+            --accent-color: #34945e;
+            --text-color: #2c3e50;
+            --background-color: #f5f7f9;
+            --card-background: #ffffff;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+        }
+
+        .menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            color: white;
+            background-color: var(--secondary-color);
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .menu:hover {
+            background-color: var(--accent-color);
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .dropdown a:hover {
+            background-color: var(--accent-color);
+        }
+
+        .reciter-section {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .reciter-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 1rem auto;
+            object-fit: cover;
+            border: 4px solid var(--accent-color);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .surahs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .surah-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .surah-card:hover {
+            transform: translateY(-5px);
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .surah-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .surah-info {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .surah-card:hover .surah-info {
+            color: #fff;
+        }
+
+        .audio-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--primary-color);
+            padding: 1rem;
+            display: none;
+            z-index: 1000;
+        }
+
+        .audio-player.visible {
+            display: block;
+        }
+
+        .audio-player audio {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .now-playing {
+            color: white;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Additional styles for prayer times section */
+        h1.prayer-title {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        #prayer-times {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #prayer-times img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        a.prayer-download {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a.prayer-download:hover {
+            background-color: darkgreen;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .surahs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reciter-image {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>القرآن الكريم</h1>
+        <p>Le Saint Coran</p>
+    </header>
+    <div class="menu" onclick="toggleDropdown()" aria-haspopup="true" aria-expanded="false">Menu</div>
+    <div class="dropdown" id="dropdownMenu" role="menu">
+        <a href="prieres.html" role="menuitem">Horaires de prière</a>
+    </div>
+    <section class="reciter-section">
+        <img src="yasserdosari.jpg" alt="Yasser Al-Dossari" class="reciter-image">
+        <h2>ياسر الدوسري</h2>
+        <p>Yasser Al-Dossari</p>
+    </section>
+    
+    <main>
+        
+        <div class="surahs-grid">
+            <div class="surah-card" onclick="playAudio('001.mp3', 'سورة الفاتحة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('001.mp3', 'سورة الفاتحة'); }">
+                <div class="surah-name">سورة الفاتحة</div>
+                <p class="surah-info">Al-Fatiha | 7 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('002.mp3', 'سورة البقرة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('002.mp3', 'سورة البقرة'); }">
+                <div class="surah-name">سورة البقرة</div>
+                <p class="surah-info">Al-Baqara | 286 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('003.mp3', 'سورة آل عمران')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('003.mp3', 'سورة آل عمران'); }">
+                <div class="surah-name">سورة آل عمران</div>
+                <p class="surah-info">Al-Imran | 200 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('004.mp3', 'سورة النساء')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('004.mp3', 'سورة النساء'); }">
+                <div class="surah-name">سورة النساء</div>
+                <p class="surah-info">An-Nisa' | 176 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('005.mp3', 'سورة المائدة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('005.mp3', 'سورة المائدة'); }">
+                <div class="surah-name">سورة المائدة</div>
+                <p class="surah-info">Al-Ma'ida | 120 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('006.mp3', 'سورة الأنعام')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('006.mp3', 'سورة الأنعام'); }">
+                <div class="surah-name">سورة الأنعام</div>
+                <p class="surah-info">Al-An'am | 165 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('007.mp3', 'سورة الأعراف')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('007.mp3', 'سورة الأعراف'); }">
+                <div class="surah-name">سورة الأعراف</div>
+                <p class="surah-info">Al-A'raf | 206 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('008.mp3', 'سورة الأنفال')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('008.mp3', 'سورة الأنفال'); }">
+                <div class="surah-name">سورة الأنفال</div>
+                <p class="surah-info">Al-Anfal | 75 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('009.mp3', 'سورة التوبة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('009.mp3', 'سورة التوبة'); }">
+                <div class="surah-name">سورة التوبة</div>
+                <p class="surah-info">At-Tawba | 129 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('010.mp3', 'سورة يونس')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('010.mp3', 'سورة يونس'); }">
+                <div class="surah-name">سورة يونس</div>
+                <p class="surah-info">Yunus | 109 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('011.mp3', 'سورة هود')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('011.mp3', 'سورة هود'); }">
+                <div class="surah-name">سورة هود</div>
+                <p class="surah-info">Hud | 123 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('012.mp3', 'سورة يوسف')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('012.mp3', 'سورة يوسف'); }">
+                <div class="surah-name">سورة يوسف</div>
+                <p class="surah-info">Yusuf | 111 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('013.mp3', 'سورة الرعد')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('013.mp3', 'سورة الرعد'); }">
+                <div class="surah-name">سورة الرعد</div>
+                <p class="surah-info">Ar-Ra'd | 43 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('014.mp3', 'سورة ابراهيم')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('014.mp3', 'سورة ابراهيم'); }">
+                <div class="surah-name">سورة ابراهيم</div>
+                <p class="surah-info">Ibrahim | 52 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('015.mp3', 'سورة الحجر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('015.mp3', 'سورة الحجر'); }">
+                <div class="surah-name">سورة الحجر</div>
+                <p class="surah-info">Al-Hijr | 99 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('016.mp3', 'سورة النحل')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('016.mp3', 'سورة النحل'); }">
+                <div class="surah-name">سورة النحل</div>
+                <p class="surah-info">An-Nahl | 128 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('017.mp3', 'سورة الإسراء')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('017.mp3', 'سورة الإسراء'); }">
+                <div class="surah-name">سورة الإسراء</div>
+                <p class="surah-info">Al-Isra | 111 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('018.mp3', 'سورة الكهف')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('018.mp3', 'سورة الكهف'); }">
+                <div class="surah-name">سورة الكهف</div>
+                <p class="surah-info">Al-Kahf | 110 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('019.mp3', 'سورة مريم')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('019.mp3', 'سورة مريم'); }">
+                <div class="surah-name">سورة مريم</div>
+                <p class="surah-info">Maryam | 98 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('020.mp3', 'سورة طه')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('020.mp3', 'سورة طه'); }">
+                <div class="surah-name">سورة طه</div>
+                <p class="surah-info">Ta-Ha | 135 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('021.mp3', 'سورة الأنبياء')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('021.mp3', 'سورة الأنبياء'); }">
+                <div class="surah-name">سورة الأنبياء</div>
+                <p class="surah-info">Al-Anbiya | 112 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('022.mp3', 'سورة الحج')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('022.mp3', 'سورة الحج'); }">
+                <div class="surah-name">سورة الحج</div>
+                <p class="surah-info">Al-Hajj | 78 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('023.mp3', 'سورة المؤمنون')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('023.mp3', 'سورة المؤمنون'); }">
+                <div class="surah-name">سورة المؤمنون</div>
+                <p class="surah-info">Al-Mu'minun | 118 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('024.mp3', 'سورة النور')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('024.mp3', 'سورة النور'); }">
+                <div class="surah-name">سورة النور</div>
+                <p class="surah-info">An-Nur | 64 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('025.mp3', 'سورة الفرقان')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('025.mp3', 'سورة الفرقان'); }">
+                <div class="surah-name">سورة الفرقان</div>
+                <p class="surah-info">Al-Furqan | 77 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('026.mp3', 'سورة الشعراء')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('026.mp3', 'سورة الشعراء'); }">
+                <div class="surah-name">سورة الشعراء</div>
+                <p class="surah-info">Ash-Shu'ara | 227 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('027.mp3', 'سورة النمل')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('027.mp3', 'سورة النمل'); }">
+                <div class="surah-name">سورة النمل</div>
+                <p class="surah-info">An-Naml | 93 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('028.mp3', 'سورة القصص')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('028.mp3', 'سورة القصص'); }">
+                <div class="surah-name">سورة القصص</div>
+                <p class="surah-info">Al-Qasas | 88 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('029.mp3', 'سورة العنكبوت')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('029.mp3', 'سورة العنكبوت'); }">
+                <div class="surah-name">سورة العنكبوت</div>
+                <p class="surah-info">Al-Ankabut | 69 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('030.mp3', 'سورة الروم')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('030.mp3', 'سورة الروم'); }">
+                <div class="surah-name">سورة الروم</div>
+                <p class="surah-info">Ar-Rum | 60 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('031.mp3', 'سورة لقمان')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('031.mp3', 'سورة لقمان'); }">
+                <div class="surah-name">سورة لقمان</div>
+                <p class="surah-info">Luqman | 34 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('032.mp3', 'سورة السجدة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('032.mp3', 'سورة السجدة'); }">
+                <div class="surah-name">سورة السجدة</div>
+                <p class="surah-info">As-Sajda | 30 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('033.mp3', 'سورة الأحزاب')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('033.mp3', 'سورة الأحزاب'); }">
+                <div class="surah-name">سورة الأحزاب</div>
+                <p class="surah-info">Al-Ahzab | 73 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('034.mp3', 'سورة سبأ')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('034.mp3', 'سورة سبأ'); }">
+                <div class="surah-name">سورة سبأ</div>
+                <p class="surah-info">Saba' | 54 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('035.mp3', 'سورة فاطر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('035.mp3', 'سورة فاطر'); }">
+                <div class="surah-name">سورة فاطر</div>
+                <p class="surah-info">Fatir | 45 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('036.mp3', 'سورة يس')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('036.mp3', 'سورة يس'); }">
+                <div class="surah-name">سورة يس</div>
+                <p class="surah-info">Ya-Sin | 83 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('037.mp3', 'سورة الصافات')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('037.mp3', 'سورة الصافات'); }">
+                <div class="surah-name">سورة الصافات</div>
+                <p class="surah-info">As-Saffat | 182 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('038.mp3', 'سورة ص')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('038.mp3', 'سورة ص'); }">
+                <div class="surah-name">سورة ص</div>
+                <p class="surah-info">Sad | 88 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('039.mp3', 'سورة الزمر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('039.mp3', 'سورة الزمر'); }">
+                <div class="surah-name">سورة الزمر</div>
+                <p class="surah-info">Az-Zumar | 75 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('040.mp3', 'سورة غافر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('040.mp3', 'سورة غافر'); }">
+                <div class="surah-name">سورة غافر</div>
+                <p class="surah-info">Ghafir | 85 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('041.mp3', 'سورة فصلت')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('041.mp3', 'سورة فصلت'); }">
+                <div class="surah-name">سورة فصلت</div>
+                <p class="surah-info">Fussilat | 54 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('042.mp3', 'سورة الشورى')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('042.mp3', 'سورة الشورى'); }">
+                <div class="surah-name">سورة الشورى</div>
+                <p class="surah-info">Ash-Shura | 53 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('043.mp3', 'سورة الزخرف')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('043.mp3', 'سورة الزخرف'); }">
+                <div class="surah-name">سورة الزخرف</div>
+                <p class="surah-info">Az-Zukhruf | 89 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('044.mp3', 'سورة الدخان')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('044.mp3', 'سورة الدخان'); }">
+                <div class="surah-name">سورة الدخان</div>
+                <p class="surah-info">Ad-Dukhan | 59 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('045.mp3', 'سورة الجاثية')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('045.mp3', 'سورة الجاثية'); }">
+                <div class="surah-name">سورة الجاثية</div>
+                <p class="surah-info">Al-Jathiya | 37 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('046.mp3', 'سورة الأحقاف')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('046.mp3', 'سورة الأحقاف'); }">
+                <div class="surah-name">سورة الأحقاف</div>
+                <p class="surah-info">Al-Ahqaf | 35 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('047.mp3', 'سورة محمد')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('047.mp3', 'سورة محمد'); }">
+                <div class="surah-name">سورة محمد</div>
+                <p class="surah-info">Muhammad | 38 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('048.mp3', 'سورة الفتح')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('048.mp3', 'سورة الفتح'); }">
+                <div class="surah-name">سورة الفتح</div>
+                <p class="surah-info">Al-Fath | 29 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('049.mp3', 'سورة الحجرات')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('049.mp3', 'سورة الحجرات'); }">
+                <div class="surah-name">سورة الحجرات</div>
+                <p class="surah-info">Al-Hujurat | 18 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('050.mp3', 'سورة ق')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('050.mp3', 'سورة ق'); }">
+                <div class="surah-name">سورة ق</div>
+                <p class="surah-info">Qaf | 45 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('051.mp3', 'سورة الذاريات')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('051.mp3', 'سورة الذاريات'); }">
+                <div class="surah-name">سورة الذاريات</div>
+                <p class="surah-info">Adh-Dhariyat | 60 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('052.mp3', 'سورة الطور')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('052.mp3', 'سورة الطور'); }">
+                <div class="surah-name">سورة الطور</div>
+                <p class="surah-info">At-Tur | 49 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('053.mp3', 'سورة النجم')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('053.mp3', 'سورة النجم'); }">
+                <div class="surah-name">سورة النجم</div>
+                <p class="surah-info">An-Najm | 62 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('054.mp3', 'سورة القمر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('054.mp3', 'سورة القمر'); }">
+                <div class="surah-name">سورة القمر</div>
+                <p class="surah-info">Al-Qamar | 55 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('055.mp3', 'سورة الرحمن')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('055.mp3', 'سورة الرحمن'); }">
+                <div class="surah-name">سورة الرحمن</div>
+                <p class="surah-info">Ar-Rahman | 78 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('056.mp3', 'سورة الواقعة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('056.mp3', 'سورة الواقعة'); }">
+                <div class="surah-name">سورة الواقعة</div>
+                <p class="surah-info">Al-Waqia | 96 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('057.mp3', 'سورة الحديد')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('057.mp3', 'سورة الحديد'); }">
+                <div class="surah-name">سورة الحديد</div>
+                <p class="surah-info">Al-Hadid | 29 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('058.mp3', 'سورة المجادلة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('058.mp3', 'سورة المجادلة'); }">
+                <div class="surah-name">سورة المجادلة</div>
+                <p class="surah-info">Al-Mujadila | 22 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('059.mp3', 'سورة الحشر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('059.mp3', 'سورة الحشر'); }">
+                <div class="surah-name">سورة الحشر</div>
+                <p class="surah-info">Al-Hashr | 24 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('060.mp3', 'سورة الممتحنة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('060.mp3', 'سورة الممتحنة'); }">
+                <div class="surah-name">سورة الممتحنة</div>
+                <p class="surah-info">Al-Mumtahana | 13 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('061.mp3', 'سورة الصف')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('061.mp3', 'سورة الصف'); }">
+                <div class="surah-name">سورة الصف</div>
+                <p class="surah-info">As-Saff | 14 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('062.mp3', 'سورة الجمعة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('062.mp3', 'سورة الجمعة'); }">
+                <div class="surah-name">سورة الجمعة</div>
+                <p class="surah-info">Al-Jumu'a | 11 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('063.mp3', 'سورة المنافقون')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('063.mp3', 'سورة المنافقون'); }">
+                <div class="surah-name">سورة المنافقون</div>
+                <p class="surah-info">Al-Munafiqun | 11 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('064.mp3', 'سورة التغابن')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('064.mp3', 'سورة التغابن'); }">
+                <div class="surah-name">سورة التغابن</div>
+                <p class="surah-info">Al-Taghabun | 18 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('065.mp3', 'سورة الطلاق')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('065.mp3', 'سورة الطلاق'); }">
+                <div class="surah-name">سورة الطلاق</div>
+                <p class="surah-info">At-Talaq | 12 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('066.mp3', 'سورة التحريم')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('066.mp3', 'سورة التحريم'); }">
+                <div class="surah-name">سورة التحريم</div>
+                <p class="surah-info">At-Tahrim | 12 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('067.mp3', 'سورة الملك')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('067.mp3', 'سورة الملك'); }">
+                <div class="surah-name">سورة الملك</div>
+                <p class="surah-info">Al-Mulk | 30 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('068.mp3', 'سورة القلم')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('068.mp3', 'سورة القلم'); }">
+                <div class="surah-name">سورة القلم</div>
+                <p class="surah-info">Al-Qalam | 52 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('069.mp3', 'سورة الحاقة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('069.mp3', 'سورة الحاقة'); }">
+                <div class="surah-name">سورة الحاقة</div>
+                <p class="surah-info">Al-Haaqqa | 52 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('070.mp3', 'سورة المعارج')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('070.mp3', 'سورة المعارج'); }">
+                <div class="surah-name">سورة المعارج</div>
+                <p class="surah-info">Al-Ma'arij | 44 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('071.mp3', 'سورة نوح')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('071.mp3', 'سورة نوح'); }">
+                <div class="surah-name">سورة نوح</div>
+                <p class="surah-info">Nuh | 28 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('072.mp3', 'سورة الجن')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('072.mp3', 'سورة الجن'); }">
+                <div class="surah-name">سورة الجن</div>
+                <p class="surah-info">Al-Jinn | 28 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('073.mp3', 'سورة المزمل')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('073.mp3', 'سورة المزمل'); }">
+                <div class="surah-name">سورة المزمل</div>
+                <p class="surah-info">Al-Muzzammil | 20 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('074.mp3', 'سورة المدثر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('074.mp3', 'سورة المدثر'); }">
+                <div class="surah-name">سورة المدثر</div>
+                <p class="surah-info">Al-Muddaththir | 56 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('075.mp3', 'سورة القيامة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('075.mp3', 'سورة القيامة'); }">
+                <div class="surah-name">سورة القيامة</div>
+                <p class="surah-info">Al-Qiyama | 40 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('076.mp3', 'سورة الإنسان')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('076.mp3', 'سورة الإنسان'); }">
+                <div class="surah-name">سورة الإنسان</div>
+                <p class="surah-info">Al-Insan | 31 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('077.mp3', 'سورة المرسلات')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('077.mp3', 'سورة المرسلات'); }">
+                <div class="surah-name">سورة المرسلات</div>
+                <p class="surah-info">Al-Mursalat | 50 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('078.mp3', 'سورة النبأ')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('078.mp3', 'سورة النبأ'); }">
+                <div class="surah-name">سورة النبأ</div>
+                <p class="surah-info">An-Naba | 40 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('079.mp3', 'سورة النازعات')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('079.mp3', 'سورة النازعات'); }">
+                <div class="surah-name">سورة النازعات</div>
+                <p class="surah-info">An-Nazi'at | 46 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('080.mp3', 'سورة عبس')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('080.mp3', 'سورة عبس'); }">
+                <div class="surah-name">سورة عبس</div>
+                <p class="surah-info">Abasa | 42 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('081.mp3', 'سورة التكوير')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('081.mp3', 'سورة التكوير'); }">
+                <div class="surah-name">سورة التكوير</div>
+                <p class="surah-info">At-Takwir | 29 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('082.mp3', 'سورة الإنفطار')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('082.mp3', 'سورة الإنفطار'); }">
+                <div class="surah-name">سورة الإنفطار</div>
+                <p class="surah-info">Al-Infitar | 19 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('083.mp3', 'سورة المطففين')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('083.mp3', 'سورة المطففين'); }">
+                <div class="surah-name">سورة المطففين</div>
+                <p class="surah-info">Al-Mutaffifin | 36 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('084.mp3', 'سورة الإنشقاق')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('084.mp3', 'سورة الإنشقاق'); }">
+                <div class="surah-name">سورة الإنشقاق</div>
+                <p class="surah-info">Al-Inshiqaq | 25 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('085.mp3', 'سورة البروج')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('085.mp3', 'سورة البروج'); }">
+                <div class="surah-name">سورة البروج</div>
+                <p class="surah-info">Al-Buruj | 22 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('086.mp3', 'سورة الطارق')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('086.mp3', 'سورة الطارق'); }">
+                <div class="surah-name">سورة الطارق</div>
+                <p class="surah-info">At-Takrir | 17 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('087.mp3', 'سورة الأعلى')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('087.mp3', 'سورة الأعلى'); }">
+                <div class="surah-name">سورة الأعلى</div>
+                <p class="surah-info">Al-A'la | 19 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('088.mp3', 'سورة الغاشية')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('088.mp3', 'سورة الغاشية'); }">
+                <div class="surah-name">سورة الغاشية</div>
+                <p class="surah-info">Al-Ghashiya | 26 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('089.mp3', 'سورة الفجر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('089.mp3', 'سورة الفجر'); }">
+                <div class="surah-name">سورة الفجر</div>
+                <p class="surah-info">Al-Fajr | 30 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('090.mp3', 'سورة البلد')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('090.mp3', 'سورة البلد'); }">
+                <div class="surah-name">سورة البلد</div>
+                <p class="surah-info">Al-Balad | 20 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('091.mp3', 'سورة الشمس')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('091.mp3', 'سورة الشمس'); }">
+                <div class="surah-name">سورة الشمس</div>
+                <p class="surah-info">Ash-Shams | 15 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('092.mp3', 'سورة الليل')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('092.mp3', 'سورة الليل'); }">
+                <div class="surah-name">سورة الليل</div>
+                <p class="surah-info">Al-Lail | 21 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('093.mp3', 'سورة الضحى')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('093.mp3', 'سورة الضحى'); }">
+                <div class="surah-name">سورة الضحى</div>
+                <p class="surah-info">Ad-Duha | 11 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('094.mp3', 'سورة الشرح')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('094.mp3', 'سورة الشرح'); }">
+                <div class="surah-name">سورة الشرح</div>
+                <p class="surah-info">Al-Inshirah | 8 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('095.mp3', 'سورة التين')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('095.mp3', 'سورة التين'); }">
+                <div class="surah-name">سورة التين</div>
+                <p class="surah-info">At-Tin | 8 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('096.mp3', 'سورة العلق')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('096.mp3', 'سورة العلق'); }">
+                <div class="surah-name">سورة العلق</div>
+                <p class="surah-info">Al-Alaq | 19 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('097.mp3', 'سورة القدر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('097.mp3', 'سورة القدر'); }">
+                <div class="surah-name">سورة القدر</div>
+                <p class="surah-info">Al-Qadr | 5 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('098.mp3', 'سورة البينة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('098.mp3', 'سورة البينة'); }">
+                <div class="surah-name">سورة البينة</div>
+                <p class="surah-info">Al-Bayyina | 8 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('099.mp3', 'سورة الزلزلة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('099.mp3', 'سورة الزلزلة'); }">
+                <div class="surah-name">سورة الزلزلة</div>
+                <p class="surah-info">Az-Zalzala | 8 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('100.mp3', 'سورة العاديات')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('100.mp3', 'سورة العاديات'); }">
+                <div class="surah-name">سورة العاديات</div>
+                <p class="surah-info">Al-Adiyat | 11 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('101.mp3', 'سورة القارعة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('101.mp3', 'سورة القارعة'); }">
+                <div class="surah-name">سورة القارعة</div>
+                <p class="surah-info">Al-Qari'a | 11 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('102.mp3', 'سورة التكاثر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('102.mp3', 'سورة التكاثر'); }">
+                <div class="surah-name">سورة التكاثر</div>
+                <p class="surah-info">At-Takathur | 8 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('103.mp3', 'سورة العصر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('103.mp3', 'سورة العصر'); }">
+                <div class="surah-name">سورة العصر</div>
+                <p class="surah-info">Al-Asr | 3 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('104.mp3', 'سورة الهمزة')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('104.mp3', 'سورة الهمزة'); }">
+                <div class="surah-name">سورة الهمزة</div>
+                <p class="surah-info">Al-Humazah | 9 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('105.mp3', 'سورة الفيل')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('105.mp3', 'سورة الفيل'); }">
+                <div class="surah-name">سورة الفيل</div>
+                <p class="surah-info">Al-Fil | 5 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('106.mp3', 'سورة قريش')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('106.mp3', 'سورة قريش'); }">
+                <div class="surah-name">سورة قريش</div>
+                <p class="surah-info">Quraish | 4 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('107.mp3', 'سورة الماعون')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('107.mp3', 'سورة الماعون'); }">
+                <div class="surah-name">سورة الماعون</div>
+                <p class="surah-info">Al-Ma'oon | 7 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('108.mp3', 'سورة الكوثر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('108.mp3', 'سورة الكوثر'); }">
+                <div class="surah-name">سورة الكوثر</div>
+                <p class="surah-info">Al-Kawthar | 3 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('109.mp3', 'سورة الكافرون')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('109.mp3', 'سورة الكافرون'); }">
+                <div class="surah-name">سورة الكافرون</div>
+                <p class="surah-info">Al-Kafirun | 6 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('110.mp3', 'سورة النصر')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('110.mp3', 'سورة النصر'); }">
+                <div class="surah-name">سورة النصر</div>
+                <p class="surah-info">An-Nasr | 3 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('111.mp3', 'سورة المسد')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('111.mp3', 'سورة المسد'); }">
+                <div class="surah-name">سورة المسد</div>
+                <p class="surah-info">Al-Masad | 5 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('112.mp3', 'سورة الإخلاص')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ listenAudio('112.mp3', 'سورة الإخلاص'); }">
+                <div class="surah-name">سورة الإخلاص</div>
+                <p class="surah-info">Al-Ikhlas | 4 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('113.mp3', 'سورة الفلق')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('113.mp3', 'سورة الفلق'); }">
+                <div class="surah-name">سورة الفلق</div>
+                <p class="surah-info">Al-Falaq | 5 versets</p>
+            </div>
+            <div class="surah-card" onclick="playAudio('114.mp3', 'سورة الناس')" tabindex="0"
+                onkeydown="if(event.key === 'Enter'){ playAudio('114.mp3', 'سورة الناس'); }">
+                <div class="surah-name">سورة الناس</div>
+                <p class="surah-info">An-Nas | 6 versets</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="audio-player" id="audioPlayer">
+        <div class="now-playing" id="nowPlaying">Écouter : </div>
+        <audio id="audio" controls>
+            <source id="audioSource" src="" type="audio/mpeg">
+            Votre navigateur ne supporte pas l'élément audio.
+        </audio>
+        <a id="downloadLink" href="" download
+            style="color: white; display: block; text-align: center; margin-top: 10px;">Télécharger</a>
+    </div>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdownMenu');
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+            document.querySelector('.menu').setAttribute('aria-expanded', !isVisible);
+        }
+
+        function playAudio(file, surahName) {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const audio = document.getElementById('audio');
+            const audioSource = document.getElementById('audioSource');
+            const nowPlaying = document.getElementById('nowPlaying');
+            const downloadLink = document.getElementById('downloadLink');
+            audioSource.src = file;
+            audio.load();
+            audio.play();
+            nowPlaying.textContent = `Joue : ${surahName}`;
+            audioPlayer.classList.add('visible');
+            downloadLink.href = file; // Mettre à jour le lien de téléchargement
+        }
+
+        window.onclick = function (event) {
+            if (!event.target.matches('.menu')) {
+                const dropdown = document.getElementById('dropdownMenu');
+                dropdown.style.display = 'none';
+                document.querySelector('.menu').setAttribute('aria-expanded', 'false');
+            }
+        }
+    </script>
+</body>
+
+</html>
